@@ -41,7 +41,7 @@ def validate_signature(webhook_key):
 	print(f"expected_signature: {expected_signature}")
 
 	with open('request-data.txt', 'w') as file:
-		file.write(str(request.json.get('payload')))
+		file.write(str(msg))
 
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
 	print(f"incoming_signature: {incoming_signature}")
