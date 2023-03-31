@@ -41,12 +41,10 @@ def validate_signature(webhook_key):
 	key = bytes(webhook_key, 'utf-8')
 	print(f"\nKey bytes: {key} | type: {type(key)}")
 
-	expected_signature = new(key=key, msg=request.data,digestmod=sha256).hexdigest()
+	expected_signature = new(key=key, msg=request.form[1],digestmod=sha256).hexdigest()
 	print(f"Expected signature: {expected_signature} | type: {type(expected_signature)}")
 
-	with open('request-data.txt', 'w') as file:
-		file.write(str(request.data))
-
+	print(f"Request data: {request.form[1]} | type: {type(request.form[1])}")
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
 	print(f"Incoming signature: {incoming_signature} | type: {type(incoming_signature)}")
 
