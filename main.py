@@ -4,17 +4,17 @@ from hashlib import sha256
 from hmac import new, compare_digest
 from subprocess import call
 
-api = Flask(__name__)
+app = Flask(__name__)
 
 webhook_key = environ.get('WEBHOOK_KEY')
 
 
-@api.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
 	return "Nothing to see here!", 200
 
 
-@api.route('/gh_webhook', methods=['POST'])
+@app.route('/gh_webhook', methods=['POST'])
 def webhook():
 	if not request.headers['x-hub-signature-256']:
 		return "Missing X-Hub-Signature-256!", 500
@@ -47,4 +47,4 @@ def validate_signature():
 
 
 if __name__ == '__main__':
-	api.run(host='0.0.0.0', port=5000)
+	app.run()
