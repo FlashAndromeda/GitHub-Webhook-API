@@ -1,4 +1,4 @@
-from main import api
+from main import api as application
 
 if __name__ == "__main__":
-    api.run(host='0.0.0.0', port=5355)
+    application.run()
