@@ -32,7 +32,8 @@ def webhook():
 def validate_signature(webhook_key):
 	key = bytes(webhook_key, 'utf-8')
 
-	expected_signature = new(key=key, msg=request.form.to_dict().get('payload'),digestmod=sha256).hexdigest()
+	expected_signature = new(key=key, msg=bytes(request.form.to_dict().get('payload'), 'utf-8'),digestmod=sha256).hexdigest()
+	print(f"Request data bytes: {bytes(request.form.to_dict().get('payload'), 'utf-8')}")
 	print(f"expected_signature: {expected_signature}")
 
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
