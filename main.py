@@ -3,6 +3,7 @@ from hmac import new, compare_digest
 from os import environ
 
 from flask import Flask, request
+from subprocess import call
 
 api = Flask(__name__)
 
@@ -16,7 +17,7 @@ def webhook():
     if not validate_signature():
         return "Bad Signature!", 500
 
-    # Here goes code that executes if the signature is correct!
+    call('./script.sh')
 
     return "Success!", 200
 
