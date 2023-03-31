@@ -32,13 +32,13 @@ def webhook():
 def validate_signature(webhook_key):
 	key = bytes(webhook_key, 'utf-8')
 
-	expected_signature = new(key=key, msg=bytes(request.form.to_dict().get('payload'), 'utf-8'),digestmod=sha256).hexdigest()
-	print(f"Request data bytes: {bytes(request.form.to_dict().get('payload'), 'utf-8')}")
-	print(f"Request data type: {type(request.form.to_dict().get('payload'))}")
+	expected_signature = new(key=key, msg=bytes(str(request.json.get('payload')), 'utf-8'),digestmod=sha256).hexdigest()
+	print(f"Request data bytes: {bytes(str(request.json.get('payload')), 'utf-8')}")
+	print(f"Request data type: {type(request.json.get('payload'))}")
 	print(f"expected_signature: {expected_signature}")
 
 	with open('request-data.txt', 'w') as file:
-		file.write(request.form.to_dict().get('payload'))
+		file.write(str(request.json.get('payload')))
 
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
 	print(f"incoming_signature: {incoming_signature}")
