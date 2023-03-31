@@ -29,8 +29,8 @@ def validate_signature():
     
     # Compares the two signature strings and returns the result.
     # The compare_digest function uses an approach designed to prevent timing analysis by avoiding content-based short circuiting behaviour, making it appropriate for cryptography.
-    return compare_digest(incoming_signature, expected_signature)
-    # True or False
+    return compare_digest(incoming_signature, expected_signature) # Bool
+    
 ```
 
 The result is then checked and the code returns early if signatures mismatch (`False`) and sends a response with the error code 500 `Forbidden`
