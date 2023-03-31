@@ -31,10 +31,13 @@ def webhook():
 
 def validate_signature(webhook_key):
 	key = bytes(webhook_key, 'utf-8')
+	data = request.json
+	msg = bytes(str(data), 'utf-8')
 
-	expected_signature = new(key=key, msg=bytes(str(request.json.get('payload')), 'utf-8'),digestmod=sha256).hexdigest()
-	print(f"Request data bytes: {bytes(str(request.json.get('payload')), 'utf-8')}")
-	print(f"Request data type: {type(request.json.get('payload'))}")
+	expected_signature = new(key=key, msg=msg,digestmod=sha256).hexdigest()
+
+	print(f"Request data bytes: {msg}")
+	print(f"Request data type: {type(data)}")
 	print(f"expected_signature: {expected_signature}")
 
 	with open('request-data.txt', 'w') as file:
