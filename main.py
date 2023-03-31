@@ -6,7 +6,7 @@ from subprocess import call
 
 api = Flask(__name__)
 
-webhook_key = environ['WEBHOOK_KEY']
+webhook_key = environ.get('WEBHOOK_KEY')
 
 
 @api.route('/', methods=['GET'])
