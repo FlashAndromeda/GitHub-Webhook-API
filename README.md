@@ -40,19 +40,19 @@ Here are some things you can do after verifying the request:
 
 #### Running bash scripts!
 
-######Running a bash script from a directory:
+###### Running a bash script from a directory:
 ```python
 from subprocess import call
 
 scr = call('./script.sh') # If the script has no shebang then add 'shell=True'
 ```
-######Running a script with arguments:
+###### Running a script with arguments:
 ```python
 from subprocess import check_call
 
 scr = check_call(["./script.ksh", arg1, arg2, arg3], shell=True)
 ```
-######Reading script contents and running them:
+###### Reading script contents and running them:
 ```python
 from subprocess import call
 
