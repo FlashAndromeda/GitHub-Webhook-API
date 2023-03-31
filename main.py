@@ -34,6 +34,7 @@ def validate_signature(webhook_key):
 
 	expected_signature = new(key=key, msg=bytes(request.form.to_dict().get('payload'), 'utf-8'),digestmod=sha256).hexdigest()
 	print(f"Request data bytes: {bytes(request.form.to_dict().get('payload'), 'utf-8')}")
+	print(f"Request data type: {type(request.form.to_dict().get('payload'))}")
 	print(f"expected_signature: {expected_signature}")
 
 	with open('request-data.txt', 'w') as file:
