@@ -1,36 +1,50 @@
+from flask import Flask, request, json
+from os import environ
 from hashlib import sha256
 from hmac import new, compare_digest
-from os import environ
-
-from flask import Flask, request
 from subprocess import call
 
 api = Flask(__name__)
 
 webhook_key = environ['WEBHOOK_KEY']
 
+
+@api.route('/', methods=['GET'])
+def index():
+	return "Nothing to see here!", 200
+
+
 @api.route('/gh_webhook', methods=['POST'])
 def webhook():
-    if not request.headers['x-hub-signature-256']:
-        return "Missing X-Hub-Signature-256!", 500
+	if not request.headers['x-hub-signature-256']:
+		return "Missing X-Hub-Signature-256!", 500
 
-    if not validate_signature():
-        return "Bad Signature!", 500
+	if not validate_signature():
+		return "Bad Signature!", 500
 
-    call('./script.sh')
+	branch = json.loads((request.data).decode("utf-8")).get('ref').split('/')[-1]
 
-    return "Success!", 200
+	if branch == 'dev':
+		call('(cd /home/cgi/www-test/ && git pull origin dev)')
+		return "Updated dev branch in '/home/cgi/www-test/'", 200
+
+	elif branch == 'main':
+		call('cd /home/cgi/www/ && git pull origin main')
+		return "Updated main branch in '/home/cgi/www/'", 200
+
+	else:
+		return f"Cannot find local branch corresponding to {branch} :(", 404
 
 
 def validate_signature():
-    key = bytes(webhook_key, 'utf-8')
+	key = bytes(webhook_key, 'utf-8')
 
-    expected_signature = new(key=key, msg=request.data, digestmod=sha256).hexdigest()
+	expected_signature = new(key=key, msg=request.data,digestmod=sha256).hexdigest()
 
-    incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
+	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
 
-    return compare_digest(incoming_signature, expected_signature)
+	return compare_digest(incoming_signature, expected_signature)
 
 
 if __name__ == '__main__':
-    api.run()
+	api.run(host='0.0.0.0', port=5000, debug=True)
