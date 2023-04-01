@@ -16,6 +16,7 @@ def webhook():
 	if not validate_signature(webhook_key):
 		return "Bad Signature!", 500
 
+	return "Correct!", 200
 	# branch = json.loads((request.data).decode("utf-8")).get('ref').split('/')[-1]
 	#
 	# if branch == 'dev':
