@@ -1,16 +1,19 @@
-from flask import Flask, request, json
-from os import environ
+from flask import Flask, request
+from os import environ, getenv
 from hashlib import sha256
 from hmac import new, compare_digest
 from subprocess import call
+from dotenv import load_dotenv
 
 app = Flask(__name__)
-webhook_key = environ.get('WEBHOOK_KEY')
+try:
+	webhook_key = environ.get('WEBHOOK_KEY')
+except KeyError:
+	load_dotenv()
+	webhook_key = getenv('WEBHOOK_KEY')
 
 @app.route('/gh_webhook', methods=['POST'])
 def webhook():
-
-
 	if not request.headers['x-hub-signature-256']:
 		return "Missing X-Hub-Signature-256!", 500
 
