@@ -5,15 +5,16 @@ from hmac import new, compare_digest
 from subprocess import call
 
 app = Flask(__name__)
+webhook_key = environ.get('WEBHOOK_KEY')
 
 @app.route('/gh_webhook', methods=['POST'])
 def webhook():
-	webhook_key = environ.get('WEBHOOK_KEY')
+
 
 	if not request.headers['x-hub-signature-256']:
 		return "Missing X-Hub-Signature-256!", 500
 
-	if not validate_signature(webhook_key):
+	if not validate_signature():
 		return "Bad Signature!", 500
 
 	return "Correct!", 200
@@ -30,16 +31,17 @@ def webhook():
 	# else:
 	# 	return f"Cannot find local branch corresponding to {branch} :(", 404
 
-def validate_signature(webhook_key):
-	expected_signature = new(key=bytes(webhook_key, 'utf-8'), msg=request.data,digestmod=sha256).hexdigest()
+def validate_signature():
+	key = bytes(webhook_key, 'utf-8')
+	print(key)
 
-	print(f"expected_signature: {expected_signature}")
+	expected_signature = new(key=key, msg=request.data, digestmod=sha256).hexdigest()
+	print(expected_signature)
+
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
-	print(f"incoming_signature: {incoming_signature}")
+	print(incoming_signature)
 
-	result = compare_digest(incoming_signature, expected_signature)
-
-	return result
+	return compare_digest(incoming_signature, expected_signature)
 
 if __name__ == '__main__':
 	app.run()
