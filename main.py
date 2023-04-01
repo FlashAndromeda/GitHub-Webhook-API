@@ -30,19 +30,9 @@ def webhook():
 	# 	return f"Cannot find local branch corresponding to {branch} :(", 404
 
 def validate_signature(webhook_key):
-	key = bytes(webhook_key, 'utf-8')
-	data = request.json
-	msg = bytes(str(data), 'utf-8')
+	expected_signature = new(key=webhook_key.encode('utf-8'), msg=request.data,digestmod=sha256).hexdigest()
 
-	expected_signature = new(key=key, msg=msg,digestmod=sha256).hexdigest()
-
-	print(f"Request data bytes: {msg}")
-	print(f"Request data type: {type(data)}")
 	print(f"expected_signature: {expected_signature}")
-
-	with open('request-data.txt', 'w') as file:
-		file.write(str(msg))
-
 	incoming_signature = request.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
 	print(f"incoming_signature: {incoming_signature}")
 
