@@ -34,7 +34,7 @@ def webhook():
 def validate_signature():
 	key = bytes(webhook_key, 'utf-8')
 	print(key)
-
+	print(request.data)
 	expected_signature = new(key=key, msg=request.data, digestmod=sha256).hexdigest()
 	print(expected_signature)
 
