@@ -6,11 +6,9 @@ from subprocess import call
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-try:
-	webhook_key = environ.get('WEBHOOK_KEY')
-except KeyError:
-	load_dotenv()
-	webhook_key = getenv('WEBHOOK_KEY')
+
+load_dotenv()
+webhook_key = getenv('WEBHOOK_KEY')
 
 @app.route('/gh_webhook', methods=['POST'])
 def webhook():
